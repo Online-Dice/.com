@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8">
+  <title>Roll Color Dice, 6-sided Color Dice</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('dice bg.png'); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .top-image {
+      margin-top: 30px;
+      width: 300px;
+      max-width: 80%;
+    }
+
+    .roll-button-img {
+      height: 45px;
+      width: 550px;
+      padding: 15px 0;
+      cursor: pointer;
+    }
+
+    .dice-container {
+      background-image: url('container-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+      border: 3px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .title-image {
+      height: 24px;
+      object-fit: contain;
+      margin-bottom: 4px;
+    }
+
+    .dropdowns {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .dice-option {
+      width: 280px;
+      height: 35px;
+      object-fit: contain;
+    }
+
+    .dice-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .dice {
+      width: 60px;
+      height: 60px;
+      border-radius: 13px;
+      border: 7px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 50px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .orange { background-color: orange; }
+    .purple { background-color: purple; }
+    .green { background-color: green; }
+
+    .roll-button {
+      background-color: #ffcc00;
+      border: none;
+      padding: 10px 200px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 3px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+
+    .roll-button:hover {
+      background-color: #f0b700;
+    }
+
+    .note-image {
+      height: 18px;
+      margin-top: 10px;
+      object-fit: contain;
+    }
+
+    .possible-colors-container {
+      background-color: #1E90FF;
+      border-radius: 2px;
+      padding: 2px 70px;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .possible-colors-text {
+      font-size: 14px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-weight: bold;
+      color: white;
+      margin: 0;
+      text-align: center;
+    }
+
+    .color-button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0 2px;
+      font: inherit;
+      font-weight: bold;
+      cursor: pointer;
+     
+    }
+
+    .color-button:hover {
+      opacity: 0.7;
+    }
+
+    .red { background-color: red; }
+    .orange { background-color: orange; }
+    .yellow { background-color: gold; }
+    .green { background-color: green; }
+    .blue { background-color: blue; }
+    .purple { background-color: purple; }
+
+    #video-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #roll-video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔊 Sound for rolling -->
+  <audio id="roll-sound" src="audio.mp3"></audio>
+
+  <!-- 🎥 Fullscreen video -->
+  <div id="video-wrapper">
+    <video id="roll-video" autoplay muted playsinline></video>
+  </div>
+
+  <!-- 🎲 Top image -->
+  <img src="dice bg ontop.png" alt="Top Image" class="top-image">
+
+  <div class="dice-container">
+    <img src="roll-title.png" alt="ROLL COLOR DICE" class="title-image">
+
+    <div class="dropdowns">
+      <img src="4dice.png" alt="4 Dice" class="dice-option">
+      <img src="colordice.png" alt="Color Dice" class="dice-option">
+    </div>
+
+    <div class="dice-row">
+      <div class="dice orange">•</div>
+      <div class="dice orange">•</div>
+      <div class="dice purple">•</div>
+      <div class="dice green">•</div>
+    </div>
+
+    <br><br><br><br><br><br><br><br><br><br><br>
+
+    <img src="roll again.png" alt="Roll Again" class="roll-button-img">
+
+    <div class="possible-colors-container">
+      <p class="possible-colors-text">
+        Possible colors are: 
+        <button class="color-button" style="color: red;" data-color="red">Red</button>, 
+        <button class="color-button" style="color: orange;" data-color="orange">Orange</button>, 
+        <button class="color-button" style="color: gold;" data-color="yellow">Yellow</button>, 
+        <button class="color-button" style="color: green;" data-color="green">Green</button>, 
+        <button class="color-button" style="color: blue;" data-color="blue">Blue</button> and 
+        <button class="color-button" style="color: purple;" data-color="purple">Purple</button>.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const diceElements = document.querySelectorAll('.dice');
+    const colorButtons = document.querySelectorAll('.color-button');
+    const rollAgainImg = document.querySelector('.roll-button-img');
+    const diceContainer = document.querySelector('.dice-container');
+    const topImage = document.querySelector('.top-image');
+    const videoWrapper = document.getElementById('video-wrapper');
+    const video = document.getElementById('roll-video');
+    const rollSound = document.getElementById('roll-sound');
+
+    const allColors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+
+    function rollDiceExclude(excludeColor = null) {
+      const availableColors = allColors.filter(color => color !== excludeColor);
+      const chance = Math.random();
+      let selectedColors = [];
+
+      if (chance <= 0.05) {
+        const duplicateColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+        const howManySame = Math.floor(Math.random() * 3) + 2;
+        for (let i = 0; i < howManySame; i++) {
+          selectedColors.push(duplicateColor);
+        }
+        const rest = shuffle(availableColors.filter(c => c !== duplicateColor)).slice(0, 4 - howManySame);
+        selectedColors = selectedColors.concat(rest);
+      } else {
+        selectedColors = shuffle(availableColors).slice(0, 4);
+      }
+
+      selectedColors = shuffle(selectedColors);
+      diceElements.forEach((dice, index) => {
+        dice.className = 'dice ' + selectedColors[index];
+      });
+    }
+
+    function rollDiceAllUnique() {
+      const shuffled = shuffle([...allColors]).slice(0, 4);
+      diceElements.forEach((dice, index) => {
+        dice.className = 'dice ' + shuffled[index];
+      });
+    }
+
+    function playVideoThenRoll(excludeColor = null, forceUnique = false) {
+      diceContainer.style.display = 'none';
+      topImage.style.display = 'none';
+
+      rollSound.currentTime = 0;
+      rollSound.play();
+
+      const videoFiles = ['1.mp4', '2.mp4', '3.mp4'];
+      const selectedVideo = videoFiles[Math.floor(Math.random() * videoFiles.length)];
+
+      video.innerHTML = `<source src="${selectedVideo}" type="video/mp4">`;
+      video.load();
+      videoWrapper.style.display = 'flex';
+      video.currentTime = 0;
+      video.play();
+
+      video.onended = () => {
+        videoWrapper.style.display = 'none';
+        diceContainer.style.display = 'block';
+        topImage.style.display = 'block';
+
+        if (forceUnique) {
+          rollDiceAllUnique();
+        } else {
+          rollDiceExclude(excludeColor);
+        }
+      };
+    }
+
+    colorButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const excludedColor = button.getAttribute('data-color');
+        playVideoThenRoll(excludedColor, false);
+      });
+    });
+
+    rollAgainImg.addEventListener('click', () => {
+      playVideoThenRoll(null, true);
+    });
+  </script>
+</body>
+</html>
